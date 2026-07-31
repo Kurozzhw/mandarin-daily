@@ -129,7 +129,30 @@ const seen = new Set(detailed.map(d => d.w));
 const rest = window.HSK_WORDS.filter(w => !seen.has(w.w)).map(w => ({
   w:w.w, p:w.p, m:(w.m||[]).join("; "), l:w.l, t:w.t, pos:w.pos||[], x:[], full:false
 }));
-const DECK = detailed.concat(rest);
+/* HSK 5 first, then HSK 6; alphabetical by pinyin within each level, dictionary-style:
+   letters first with tone marks stripped (ān/án/ǎn/àn all file under "an"), then tones
+   in order 1-2-3-4 (neutral last), then the characters. */
+const collate = new Intl.Collator("en");
+const TONE = {"̄":1, "́":2, "̌":3, "̀":4};
+const plain = s => s.replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+const toneOf = s => { for(const c of s) if(TONE[c]) return TONE[c]; return 5; };  // 5 = neutral
+
+/* ["ān","wèi"] -> [["an",1],["wei",4]] : letters and tone, syllable by syllable */
+const pyKey = p => p.normalize("NFD").split(/\s+/).filter(Boolean)
+                    .map(s => [plain(s), toneOf(s)]);
+
+function byPinyin(a, b){
+  const x = pyKey(a), y = pyKey(b);
+  for(let i = 0; i < Math.min(x.length, y.length); i++){
+    const c = collate.compare(x[i][0], y[i][0]);
+    if(c) return c;
+    if(x[i][1] !== y[i][1]) return x[i][1] - y[i][1];
+  }
+  return x.length - y.length;
+}
+
+const DECK = detailed.concat(rest).sort((a, b) =>
+  (a.l || 9) - (b.l || 9) || byPinyin(a.p, b.p) || collate.compare(a.w, b.w));
 const LAST_FULL_DAY = Math.ceil(detailed.length / PER_DAY);
 const TOTAL_DAYS = Math.ceil(DECK.length / PER_DAY);
 
