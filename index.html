@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>每日中文 · Daily Mandarin (HSK 5–6)</title>
+<style>
+:root{
+  --bg:#f7f5f1; --card:#fff; --fg:#1b1a18; --muted:#75716a; --faint:#a8a39a;
+  --line:#e6e2da; --accent:#b03f2a; --accent-soft:#f3e6e1; --radius:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#141618; --card:#1d2023; --fg:#eae7e1; --muted:#9b968e; --faint:#6d6862;
+         --line:#2b2f33; --accent:#e2765d; --accent-soft:#2a2220; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.5}
+.zh{font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei","Source Han Sans SC",sans-serif}
+.wrap{max-width:820px;margin:0 auto;padding:0 18px 80px}
+
+/* ---- day header ---- */
+.top{position:sticky;top:0;z-index:5;background:var(--bg);
+  border-bottom:1px solid var(--line);padding:16px 0 12px;margin-bottom:26px}
+.top-in{max-width:820px;margin:0 auto;padding:0 18px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.daynum{font-size:26px;font-weight:680;letter-spacing:-.02em;white-space:nowrap}
+.daynum small{display:block;font-size:12px;font-weight:500;color:var(--muted);
+  letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.meta{color:var(--muted);font-size:13px;flex:1;min-width:140px}
+.meta b{color:var(--fg);font-weight:600}
+.nav{display:flex;gap:8px}
+.nav button{font:inherit;font-size:13px;padding:8px 13px;border-radius:10px;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);transition:.12s}
+.nav button:hover:not(:disabled){border-color:var(--muted)}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav button.now{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+
+.notice{background:var(--accent-soft);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;font-size:13px;color:var(--muted);margin-bottom:22px}
+.notice.resume{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--fg)}
+.notice.resume button{font:inherit;font-size:12.5px;padding:6px 12px;border-radius:9px;
+  cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:#fff;font-weight:600}
+
+/* ---- word entry ---- */
+.entry{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px 24px;margin-bottom:14px;position:relative;
+  box-shadow:0 1px 2px rgba(0,0,0,.035)}
+.n{position:absolute;top:18px;right:22px;font-size:12px;color:var(--faint);
+  font-variant-numeric:tabular-nums;letter-spacing:.06em}
+.head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:2px;padding-right:36px}
+.word{font-size:40px;font-weight:600;letter-spacing:.02em;line-height:1.2}
+.py{font-size:19px;color:var(--accent);font-weight:500}
+.tag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);
+  border:1px solid var(--line);border-radius:99px;padding:2px 8px}
+.en{font-size:16px;margin:4px 0 0}
+.ex{margin-top:16px;padding-left:14px;border-left:2px solid var(--line)}
+.ex + .ex{margin-top:12px}
+.ex h4{margin:0 0 5px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);font-weight:600}
+.ex .c{font-size:19px;line-height:1.6}
+.ex .p{font-size:13px;color:var(--accent);margin-top:2px}
+.ex .e{font-size:13.5px;color:var(--muted);margin-top:1px}
+.pairs{margin-top:16px;border-top:1px dashed var(--line);padding-top:12px}
+.pairs h4{margin:0 0 8px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);font-weight:600}
+.pairs ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.pairs li{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.pairs .c{font-size:17px}
+.pairs .p{font-size:12px;color:var(--accent)}
+.pairs .e{font-size:13px;color:var(--muted)}
+.pending{margin-top:12px;font-size:12.5px;color:var(--faint);font-style:italic}
+
+footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--faint)}
+footer button{font:inherit;font-size:12.5px;padding:6px 11px;border-radius:9px;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);color:var(--muted)}
+footer a{color:var(--muted)}
+footer span{max-width:560px}
+@media (max-width:520px){
+  .word{font-size:34px} .daynum{font-size:22px} .entry{padding:18px 16px}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="top-in">
+  <div class="daynum" id="daynum">第 1 天<small id="daylabel">Day 1</small></div>
+  <div class="meta" id="meta"></div>
+  <div class="nav">
+    <button id="prev">← prev</button>
+    <button id="now" class="now">today</button>
+    <button id="next">next →</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <div id="list"></div>
+  <footer>
+    <span>HSK 3.0 levels 5–6 · <span id="total"></span> words · 20 per day ·
+      word data from <a href="https://www.mdbg.net/chinese/dictionary?page=cc-cedict">CC-CEDICT</a>
+      (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a>)</span>
+    <button id="restart">restart from day 1</button>
+  </footer>
+</div>
+
+<script src="data/words.js"></script>
+<script src="data/details-01.js"></script>
+<script src="data/details-02.js"></script>
+<script src="data/details-03.js"></script>
+<script src="data/details-04.js"></script>
+<script src="data/details-05.js"></script>
+<script src="data/details-06.js"></script>
+<script src="data/details-07.js"></script>
+<script>
+(function(){
+"use strict";
+const KEY = "mandarin-daily-v2", OLD_KEY = "mandarin-daily-start", PER_DAY = 20, DAY = 86400000;
+
+/* ---------- deck: curated words first, then the rest of the HSK 5-6 list ---------- */
+const meta = new Map(window.HSK_WORDS.map(w => [w.w, w]));
+const detailed = (window.HSK_DETAILS || []).map(d => {
+  const m = meta.get(d.w) || {};
+  return {w:d.w, p:d.p, m:d.m, l:m.l, t:m.t, pos:m.pos||[], d:d.d, k:d.k, x:d.x||[], full:true};
+});
+const seen = new Set(detailed.map(d => d.w));
+const rest = window.HSK_WORDS.filter(w => !seen.has(w.w)).map(w => ({
+  w:w.w, p:w.p, m:(w.m||[]).join("; "), l:w.l, t:w.t, pos:w.pos||[], x:[], full:false
+}));
+const DECK = detailed.concat(rest);
+const LAST_FULL_DAY = Math.ceil(detailed.length / PER_DAY);
+const TOTAL_DAYS = Math.ceil(DECK.length / PER_DAY);
+
+/* ---------- which day is today ---------- */
+const midnight = d => { const x = new Date(d); x.setHours(0,0,0,0); return x; };
+const dstr = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)); } catch(e){}
+if(!S || !/^\d{4}-\d{2}-\d{2}$/.test(S.start || "")){
+  const legacy = localStorage.getItem(OLD_KEY);
+  S = {start: /^\d{4}-\d{2}-\d{2}$/.test(legacy||"") ? legacy : dstr(midnight(new Date())),
+       lastDay: 1, scroll: {}};
+}
+if(!S.scroll) S.scroll = {};
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} };
+
+const startDate = midnight(new Date(S.start + "T00:00:00"));
+const todayDay = Math.min(TOTAL_DAYS,
+  Math.floor((midnight(new Date()) - startDate) / DAY) + 1);
+
+let day = Math.min(TOTAL_DAYS, Math.max(1, S.lastDay || todayDay));
+let restoring = true;                       // restore scroll on the first render only
+save();
+
+/* ---------- render ---------- */
+const esc = s => String(s).replace(/[&<>]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+const listEl = document.getElementById("list");
+
+function dateOfDay(n){ return new Date(startDate.getTime() + (n-1)*DAY); }
+
+function render(){
+  const words = DECK.slice((day-1)*PER_DAY, day*PER_DAY);
+  const d = dateOfDay(day);
+
+  document.getElementById("daynum").innerHTML =
+    `第 ${day} 天<small>Day ${day} of ${TOTAL_DAYS}</small>`;
+  document.getElementById("meta").innerHTML =
+    `<b>${d.toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric"})}</b>` +
+    ` · ${words.length} words · HSK ${[...new Set(words.map(w=>w.l))].sort().join(" & ")}`;
+  document.getElementById("prev").disabled = day <= 1;
+  document.getElementById("next").disabled = day >= TOTAL_DAYS;
+  document.getElementById("now").style.display = day === todayDay ? "none" : "";
+
+  let html = "";
+  if(day < todayDay){
+    html += `<div class="notice resume">You left off on day ${day}. Day ${todayDay} is ready.
+      <button id="gotoday">open day ${todayDay} →</button></div>`;
+  }
+  if(day > LAST_FULL_DAY){
+    html += `<div class="notice">Days 1–${LAST_FULL_DAY} have full write-ups.
+      From day ${LAST_FULL_DAY+1} on you get the word, pinyin and dictionary meaning —
+      examples and pairings are still being written.</div>`;
+  }
+
+  html += words.map((e, i) => {
+    const n = (day-1)*PER_DAY + i + 1;
+    const tags = [`HSK ${e.l}`]
+      .concat(e.pos && e.pos.length ? [e.pos.join("/")] : [])
+      .concat(e.t && e.t !== e.w ? ["繁 " + e.t] : []);
+    let h = `<article class="entry">
+      <div class="n">${n}</div>
+      <div class="head">
+        <span class="word zh">${esc(e.w)}</span>
+        <span class="py">${esc(e.p)}</span>
+        ${tags.map(t=>`<span class="tag zh">${esc(t)}</span>`).join("")}
+      </div>
+      <p class="en">${esc(e.m)}</p>`;
+    if(e.d) h += ex("In daily life", e.d);
+    if(e.k) h += ex("At work", e.k);
+    if(e.x.length) h += `<div class="pairs"><h4>Common pairings</h4><ul>` +
+      e.x.map(p=>`<li><span class="c zh">${esc(p[0])}</span><span class="p">${esc(p[1])}</span><span class="e">${esc(p[2])}</span></li>`).join("") +
+      `</ul></div>`;
+    if(!e.full) h += `<div class="pending">examples coming soon</div>`;
+    return h + `</article>`;
+  }).join("");
+
+  listEl.innerHTML = html;
+  const go = document.getElementById("gotoday");
+  if(go) go.onclick = () => goDay(todayDay);
+
+  window.scrollTo({top: restoring ? (S.scroll[day] || 0) : 0, behavior:"instant"});
+  restoring = false;
+
+  S.lastDay = day; save();
+}
+
+function goDay(n){
+  const t = Math.min(TOTAL_DAYS, Math.max(1, n));
+  if(t === day) return;
+  S.scroll[day] = Math.round(window.scrollY);      // bookmark the day we're leaving
+  day = t;
+  render();
+}
+
+/* remember the scroll position within the day being read */
+let tick;
+window.addEventListener("scroll", () => {
+  clearTimeout(tick);
+  tick = setTimeout(() => { S.scroll[day] = Math.round(window.scrollY); save(); }, 250);
+}, {passive:true});
+window.addEventListener("beforeunload", () => { S.scroll[day] = Math.round(window.scrollY); save(); });
+
+document.getElementById("prev").onclick = () => goDay(day - 1);
+document.getElementById("next").onclick = () => goDay(day + 1);
+document.getElementById("now").onclick  = () => goDay(todayDay);
+document.addEventListener("keydown", e => {
+  if(e.key === "ArrowLeft") goDay(day - 1);
+  if(e.key === "ArrowRight") goDay(day + 1);
+});
+document.getElementById("restart").onclick = () => {
+  if(!confirm("Set today as Day 1 again? Your reading position is cleared too.")) return;
+  localStorage.removeItem(KEY); localStorage.removeItem(OLD_KEY); location.reload();
+};
+
+function ex(title, o){
+  return `<div class="ex"><h4>${title}</h4>
+    <div class="c zh">${esc(o.c)}</div>
+    <div class="p">${esc(o.p)}</div>
+    <div class="e">${esc(o.e)}</div></div>`;
+}
+
+document.getElementById("total").textContent = DECK.length;
+render();
+})();
+</script>
+</body>
+</html>
