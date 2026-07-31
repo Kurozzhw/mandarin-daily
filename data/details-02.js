@@ -195,7 +195,7 @@ window.HSK_DETAILS = (window.HSK_DETAILS || []).concat([
 {w:"要么",p:"yào me",m:"either… or…; or else",
  d:{c:"要么现在走，要么等雨停。",p:"Yàome xiànzài zǒu, yàome děng yǔ tíng.",e:"Either we go now, or we wait for the rain to stop."},
  k:{c:"要么加人，要么延期，二选一。",p:"Yàome jiā rén, yàome yánqī, èr xuǎn yī.",e:"Either add people or push the deadline — pick one."},
- x:[["要么…要么…","yàome… yàome…","either… or…"]]},
+ x:[["要么…要么…","yàome… yàome…","either… or…"],["要么就","yàome jiù","or else just…"],["不…要么…","bù… yàome…","if not…, then…"]]},
 {w:"毕竟",p:"bì jìng",m:"after all; when all is said and done",
  d:{c:"他毕竟还是个孩子。",p:"Tā bìjìng háishì gè háizi.",e:"After all, he's still a child."},
  k:{c:"毕竟是第一次合作，慢一点正常。",p:"Bìjìng shì dì yī cì hézuò, màn yīdiǎn zhèngcháng.",e:"It's our first time working together after all, so being slower is normal."},
