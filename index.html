@@ -55,6 +55,8 @@ body{margin:0;background:var(--bg);color:var(--fg);
 .py{font-size:19px;color:var(--accent);font-weight:500}
 .tag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);
   border:1px solid var(--line);border-radius:99px;padding:2px 8px}
+.tag.pos{text-transform:none;letter-spacing:0;font-size:12px;font-style:italic;
+  border-color:transparent;padding:2px 0}
 .en{font-size:16px;margin:4px 0 0}
 .ex{margin-top:16px;padding-left:14px;border-left:2px solid var(--line)}
 .ex + .ex{margin-top:12px}
@@ -178,6 +180,33 @@ let day = Math.min(TOTAL_DAYS, Math.max(1, S.lastDay || todayDay));
 let restoring = true;                       // restore scroll on the first render only
 save();
 
+/* ---------- part of speech ----------
+   The source data tags words with corpus codes (v, vn, ad, ...). Spell them out;
+   codes that map to two roles (vn = verb used as a noun) expand to both. */
+const POS = {
+  v:["verb"], vg:["verb"], vd:["verb","adverb"], vn:["verb","noun"],
+  n:["noun"], ng:["noun"], nr:["proper noun"], ns:["proper noun"],
+  nt:["proper noun"], nz:["proper noun"], nx:["proper noun"],
+  a:["adjective"], ag:["adjective"], b:["adjective"],
+  ad:["adjective","adverb"], an:["adjective","noun"],
+  d:["adverb"], dg:["adverb"],
+  c:["conjunction"], cc:["conjunction"],
+  p:["preposition"], r:["pronoun"], rg:["pronoun"],
+  q:["measure word"], qv:["measure word"], qt:["measure word"], mq:["measure word"],
+  m:["number"], mg:["number"], Mg:["number"],
+  t:["time word"], tg:["time word"], f:["position word"], s:["place word"],
+  u:["particle"], y:["particle"], e:["interjection"], o:["onomatopoeia"],
+  i:["idiom"], l:["set phrase"], j:["abbreviation"],
+  h:["prefix"], k:["suffix"], g:["bound form"], z:["descriptive"],
+};
+function posLabel(codes){
+  const out = [];
+  for(const c of codes || [])
+    for(const label of POS[c] || POS[c.toLowerCase()] || [])
+      if(!out.includes(label)) out.push(label);
+  return out.slice(0, 3).join(" · ");        // 3 is plenty; beyond that it's noise
+}
+
 /* ---------- render ---------- */
 const esc = s => String(s).replace(/[&<>]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
 const listEl = document.getElementById("list");
@@ -210,15 +239,16 @@ function render(){
 
   html += words.map((e, i) => {
     const n = (day-1)*PER_DAY + i + 1;
-    const tags = [`HSK ${e.l}`]
-      .concat(e.pos && e.pos.length ? [e.pos.join("/")] : [])
-      .concat(e.t && e.t !== e.w ? ["繁 " + e.t] : []);
+    const pos = posLabel(e.pos);
+    const tags = [[`HSK ${e.l}`, ""]]
+      .concat(pos ? [[pos, " pos"]] : [])
+      .concat(e.t && e.t !== e.w ? [["繁 " + e.t, ""]] : []);
     let h = `<article class="entry">
       <div class="n">${n}</div>
       <div class="head">
         <span class="word zh">${esc(e.w)}</span>
         <span class="py">${esc(e.p)}</span>
-        ${tags.map(t=>`<span class="tag zh">${esc(t)}</span>`).join("")}
+        ${tags.map(t=>`<span class="tag zh${t[1]}">${esc(t[0])}</span>`).join("")}
       </div>
       <p class="en">${esc(e.m)}</p>`;
     if(e.d) h += ex("In daily life", e.d);
